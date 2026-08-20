@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>استبيان بحث التخرج - جامعة زالنجي</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1in;
+        }
+        body {
+            font-family: 'Cairo', 'Times New Roman', Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            line-height: 1.6;
+            font-size: 11.5pt;
+            color: #000000;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+            margin-bottom: 25px;
+        }
+        .header-table td {
+            border: none;
+            padding: 5px;
+            vertical-align: middle;
+        }
+        .logo-cell {
+            width: 90px;
+            text-align: center;
+        }
+        .logo-img {
+            width: 80px;
+            height: 80px;
+        }
+        .header-text-cell {
+            text-align: center;
+        }
+        .header-text-cell h3 {
+            margin: 0;
+            font-size: 11pt;
+            font-weight: normal;
+        }
+        .header-text-cell h2 {
+            margin: 5px 0 0 0;
+            font-size: 14pt;
+            font-weight: bold;
+        }
+        .header-text-cell h1 {
+            margin: 5px 0 0 0;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        .divider {
+            border-bottom: 2px solid #000000;
+            margin-bottom: 20px;
+        }
+        .title-badge {
+            text-align: center;
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 10px;
+        }
+        .main-title {
+            text-align: center;
+            font-size: 15pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .researcher-info-box {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000000;
+            margin-bottom: 20px;
+        }
+        .researcher-info-box td {
+            border: 1px solid #000000;
+            padding: 8px;
+            font-size: 10.5pt;
+        }
+        .intro-section {
+            text-align: justify;
+            font-size: 11pt;
+            margin-bottom: 25px;
+            border: 1px dashed #000000;
+            padding: 12px;
+        }
+        .section-title {
+            font-size: 13pt;
+            font-weight: bold;
+            background-color: #f2f2f2;
+            padding: 6px 12px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-right: 5px solid #000000;
+        }
+        .demo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .demo-table td {
+            border: none;
+            padding: 8px 5px;
+            vertical-align: top;
+            width: 50%;
+        }
+        .checkbox-item {
+            margin-bottom: 6px;
+        }
+        .checkbox-square {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            margin-left: 8px;
+        }
+        .likert-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .likert-table th, .likert-table td {
+            border: 1px solid #000000;
+            padding: 8px 5px;
+            text-align: center;
+            font-size: 10.5pt;
+        }
+        .likert-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .likert-table td.question-text {
+            text-align: right;
+            padding-right: 10px;
+            font-weight: normal;
+        }
+        .likert-check-cell {
+            width: 80px;
+        }
+        .textarea-box {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #000000;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
+            margin-top: 40px;
+            font-size: 9.5pt;
+            text-align: center;
+        }
+        .footer-table td {
+            border: none;
+            padding: 5px;
+            color: #555555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <table class="header-table">
+        <tr>
+            <!-- Right Logo: University of Zalingei -->
+            <td class="logo-cell">
+                <img src="university_logo.jpg" alt="شعار جامعة زالنجي" class="logo-img">
+            </td>
+            <!-- Center Info -->
+            <td class="header-text-cell">
+                <h3>جمهورية السودان</h3>
+                <h2>جامعة زالنجي</h2>
+                <h1>كلية علوم الغابات - قسم المراعي</h1>
+            </td>
+            <!-- Left Logo: Faculty of Forestry Sciences -->
+            <td class="logo-cell">
+                <img src="forestry_logo.jpg" alt="شعار كلية علوم الغابات" class="logo-img">
+            </td>
+        </tr>
+    </table>
+
+    <div class="divider"></div>
+
+    <div class="title-badge">استبانة دراسة ميدانية - بحث تخرج لنيل درجة البكالوريوس</div>
+    <div class="main-title">حوكمة الموارد الرعوية ودورها في فض النزاعات القبلية</div>
+    <div class="subtitle">دراسة حالة: مدينة زالنجي</div>
+
+    <!-- Researcher and Supervisor Info Table -->
+    <table class="researcher-info-box">
+        <tr>
+            <td style="width: 50%;"><strong>إعداد الطالب:</strong> جادالحق آدم هارون إسحاق</td>
+            <td style="width: 50%;"><strong>تحت إشراف:</strong> د. جعفر بخيت آدم إبراهيم</td>
+        </tr>
+    </table>
+
+    <!-- Introduction -->
+    <div class="intro-section">
+        <strong>أخي الكريم / أختي الكريمة، السلام عليكم ورحمة الله وبركاته..</strong><br>
+        بين أيديكم استبانة علمية تهدف لجمع البيانات اللازمة لبحث التخرج بعنوان: "حوكمة الموارد الرعوية ودورها في فض النزاعات القبلية بمدينة زالنجي". نرجو منكم التكرم بالإجابة على الأسئلة بكل موضوعية بوضع علامة (✓) في الخانة المخصصة للتعبير عن رأيكم. علماً بأن إجاباتكم ستحاط بالسرية التامة ولن تُستخدم إلا لأغراض البحث العلمي فقط. شاكرين لكم حسن تعاونكم.
+    </div>
+
+    <!-- Section 1: Demographics -->
+    <div class="section-title">أولاً: البيانات الأولية والديموغرافية</div>
+    <table class="demo-table">
+        <tr>
+            <!-- Age Group -->
+            <td>
+                <strong>1. العمر (بالسنوات):</strong><br><br>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> أقل من 25 سنة</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> من 25 إلى 40 سنة</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> من 41 إلى 55 سنة</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> أكثر من 55 سنة</div>
+            </td>
+            <!-- Educational Level -->
+            <td>
+                <strong>2. المستوى التعليمي:</strong><br><br>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> غير متعلم / أمي</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> تعليم أساسي / ثانوي</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> جامعي (بكالوريوس)</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> دراسات عليا (ماجستير/دكتوراه)</div>
+            </td>
+        </tr>
+        <tr>
+            <!-- Occupation -->
+            <td>
+                <strong>3. الصفة / المهنة في المجتمع:</strong><br><br>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> مزارع</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> راعي</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> قيادة أهلية (عمدة/شيخ/أمير)</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> موظف حكومي / إداري</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> ناشط مجتمع مدني / منظمات</div>
+            </td>
+            <!-- Residence -->
+            <td>
+                <strong>4. مدة الإقامة في مدينة زالنجي ومحيطها:</strong><br><br>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> أقل من 5 سنوات</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> من 5 إلى 10 سنوات</div>
+                <div class="checkbox-item"><span class="checkbox-square">☐</span> أكثر من 10 سنوات</div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="page-break-after: always;"></div>
+
+    <!-- Section 2: Pastoral Resources Governance -->
+    <div class="section-title">ثانياً: واقع حوكمة وإدارة الموارد الرعوية</div>
+    <table class="likert-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">الرقم</th>
+                <th style="width: 45%;">العبــــــارة</th>
+                <th class="likert-check-cell">موافق بشدة</th>
+                <th class="likert-check-cell">موافق</th>
+                <th class="likert-check-cell">محايد</th>
+                <th class="likert-check-cell">غير موافق</th>
+                <th class="likert-check-cell">غير موافق بشدة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td class="question-text">هل تعتبر الموارد الرعوية الحالية (كالمياه والمراعي الطبيعية) كافية ومتاحة بشكل عادل لكافة الماشية في زالنجي؟</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="question-text">توجد آليات وقوانين معلنة وواضحة لتوزيع الموارد الرعوية تلتزم بها المجتمعات المختلفة بالمنطقة.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class="question-text">تحظى الجهات أو اللجان المسؤولة عن إدارة الموارد بالثقة والقبول لدى المزارعين والرعاة على حد سواء.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td class="question-text">يؤدي التداخل وعدم التنسيق بين السلطات الحكومية (الرسمية) ومؤسسات الإدارة الأهلية (التقليدية) إلى تعثر حوكمة الموارد.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 3: Tribal Conflicts and Pastoral Resources -->
+    <div class="section-title">ثالثاً: النزاعات القبلية وعلاقتها بالموارد الرعوية</div>
+    <table class="likert-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">الرقم</th>
+                <th style="width: 45%;">العبــــــارة</th>
+                <th class="likert-check-cell">موافق بشدة</th>
+                <th class="likert-check-cell">موافق</th>
+                <th class="likert-check-cell">محايد</th>
+                <th class="likert-check-cell">غير موافق</th>
+                <th class="likert-check-cell">غير موافق بشدة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>5</td>
+                <td class="question-text">التنافس حول الموارد الرعوية الشحيحة (خاصة مصادر المياه والمراعي) يعد المحرك الأساسي للاحتكاك والنزاعات القبلية بزالنجي.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td class="question-text">إغلاق أو تعدي المزارعين على مسارات رحول الماشية التقليدية (المراحيل) يساهم بشكل مباشر في اندلاع الصدامات المسلحة.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td class="question-text">يتسبب النزول المبكر أو المتأخر للرعاة بدون تنسيق مسبق مع المزارعين في إتلاف المحاصيل ونشوء الاحتكاكات.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td class="question-text">تلعب العوامل البيئية والتغير المناخي (مثل التصحر والجفاف) دوراً في دفع القبائل للتصارع للسيطرة على الأراضي الخصبة ومصادر المياه.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="page-break-after: always;"></div>
+
+    <!-- Section 4: Role of Governance in Conflict Resolution -->
+    <div class="section-title">رابعاً: دور الحوكمة والجهات التنظيمية في فض النزاعات</div>
+    <table class="likert-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">الرقم</th>
+                <th style="width: 45%;">العبــــــارة</th>
+                <th class="likert-check-cell">موافق بشدة</th>
+                <th class="likert-check-cell">موافق</th>
+                <th class="likert-check-cell">محايد</th>
+                <th class="likert-check-cell">غير موافق</th>
+                <th class="likert-check-cell">غير موافق بشدة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>9</td>
+                <td class="question-text">تساهم الحوكمة الجيدة للموارد (كتحديد الحدود، وعلامات المسارات) بصورة فعالة في الحد من التوترات والصدامات القبلية بمدينة زالنجي.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td class="question-text">تؤدي الإدارة الأهلية (شيوخ، عمد، أجاويد) أدواراً أكثر كفاءة وقبولاً من الجهات الأمنية والقوانين الرسمية في فض النزاعات الرعوية العابرة للحدود القبلية.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td class="question-text">يتم تطبيق القوانين والتشريعات المحلية والاتفاقيات العرفية بعدالة ونزاهة على الطرفين (الرعاة والمزارعين) دون تحيز قبلي.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td class="question-text">تفعيل مجالس إدارة الموارد المشتركة يمثل الحل الأمثل لمنع تجدد الاحتكاكات وتحقيق حوكمة بيئية سليمة بمدينة زالنجي.</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+                <td>☐</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 5: Recommendations -->
+    <div class="section-title">خامساً: المقترحات والتوصيات</div>
+    <p>ما هي مقترحاتك وتوصياتك الأساسية لتفعيل حوكمة الموارد الرعوية وفض النزاعات القبلية في مدينة زالنجي؟</p>
+    <div class="textarea-box">
+        <!-- Lines for writing in MS Word when printed -->
+        <div style="border-bottom: 1px dotted #555555; height: 30px; width: 100%;"></div>
+        <div style="border-bottom: 1px dotted #555555; height: 30px; width: 100%;"></div>
+        <div style="border-bottom: 1px dotted #555555; height: 30px; width: 100%;"></div>
+        <div style="border-bottom: 1px dotted #555555; height: 30px; width: 100%;"></div>
+    </div>
+
+    <!-- Academic Footer -->
+    <table class="footer-table">
+        <tr>
+            <td>جميع الحقوق محفوظة &copy; جامعة زالنجي - كلية علوم الغابات - قسم المراعي 2026</td>
+        </tr>
+    </table>
+
+</body>
+</html>
