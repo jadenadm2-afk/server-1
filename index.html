@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة الاستبيان الميداني للرعاة والمزارعين - جامعة زالنجي</title>
+    <meta name="description" content="استمارة الاستبيان الميداني للرعاة والمزارعين حول حوكمة الموارد الرعوية ودورها في فض النزاعات القبلية بمحلية زالنجي">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Background Decoration Circles -->
+    <div class="bg-decor decor-1"></div>
+    <div class="bg-decor decor-2"></div>
+
+    <div class="container">
+        <div class="card">
+            <!-- Form Header -->
+            <header class="header-section">
+                <div class="header-meta-row">
+                    <div class="meta-right">
+                        <p>جمهورية السودان</p>
+                        <p>وزارة التعليم العالي والبحث العلمي</p>
+                        <p>جامعة زالنجي</p>
+                        <p>كلية علوم الغابات - قسم المراعي</p>
+                    </div>
+                    <div class="meta-logos">
+                        <img src="university_logo.jpg" alt="شعار جامعة زالنجي" class="header-logo-img">
+                        <img src="forestry_logo.jpg" alt="شعار كلية علوم الغابات" class="header-logo-img">
+                    </div>
+                    <div class="meta-left">
+                        <p>بحث تكميلي لنيل درجة بكالوريوس مرتبة الشرف</p>
+                        <p>في كلية علوم الغابات – قسم المراعي</p>
+                        <p>نطاق الدراسة الميدانية : محلية زالنجي</p>
+                        <p>العام الجامعي : 1447هـ – 2026م</p>
+                    </div>
+                </div>
+                
+                <span class="title-badge">استمارة الاستبيان الميداني للرعاة والمزارعين</span>
+                <h1 id="main-title" class="main-title">حوكمة الموارد الرعوية ودورها في فض النزاعات القبلية بمحلية زالنجي</h1>
+                
+                <div class="researcher-info">
+                    <span>إعداد الطالب: <strong>جاد الحق آدم هرون إسحق</strong></span>
+                    <span>إشراف: <strong>د. جعفر بخيت ادم ابراهيم</strong></span>
+                </div>
+
+                <div class="intro-text">
+                    <strong>أخي الكريم المزارع / الراعي، السلام عليكم ورحمة الله وبركاته،</strong><br>
+                    بين يديك استمارة استبيان تهدف لجمع بيانات ميدانية لغرض نيل درجة البكالوريوس المتقدم حول حوكمة الموارد الرعوية ودورها في فض النزاعات القبلية بمحلية زالنجي. نرجو التكرم بالإجابة بوضع علامة (✓) أمام الخيار المناسب في الجداول المرفقة، علماً بأن البيانات تستخدم لأغراض البحث العلمي فقط وتحاط بالسرية الكاملة والمطلقة.
+                </div>
+            </header>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div class="progress-labels">
+                    <span id="stepIndicator">الخطوة 1 من 5</span>
+                    <span id="percentIndicator">20%</span>
+                </div>
+            </div>
+
+            <!-- Form Start -->
+            <form id="surveyForm" onsubmit="submitForm(event)">
+                
+                <!-- STEP 1: DEMOGRAPHICS -->
+                <div class="step-content active" id="step1">
+                    <h2 class="section-title">
+                        <span class="section-icon">١</span>
+                        القسم الأول: البيانات الديموغرافية العامة للمبحوثين
+                    </h2>
+                    
+                    <div class="grid-2">
+                        <!-- Name (Optional) -->
+                        <div class="form-group">
+                            <label class="question-label" for="respondentName">الاسم (اختياري):</label>
+                            <input type="text" id="respondentName" name="respondent_name" class="input-text" placeholder="اكتب الاسم هنا (اختياري)...">
+                        </div>
+
+                        <!-- Administrative Unit -->
+                        <div class="form-group">
+                            <label class="question-label" for="adminUnit">الوحدة الإدارية بمحلية زالنجي:</label>
+                            <input type="text" id="adminUnit" name="admin_unit" class="input-text" placeholder="اكتب الوحدة الإدارية هنا..." required>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <!-- Current Occupation -->
+                        <div class="form-group">
+                            <label class="question-label">1. المهنة الحالية:</label>
+                            <div class="options-stack">
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="occupation" value="farmer" required>
+                                    <span class="option-label">مزارع</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="occupation" value="pastoralist">
+                                    <span class="option-label">راعي / مربي ماشية</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="form-group">
+                            <label class="question-label">2. العمر:</label>
+                            <div class="options-stack">
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="age" value="less_30" required>
+                                    <span class="option-label">أقل من 30 سنة</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="age" value="30_45">
+                                    <span class="option-label">30 - 45 سنة</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="age" value="more_45">
+                                    <span class="option-label">أكثر من 45 سنة</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Education Level -->
+                        <div class="form-group">
+                            <label class="question-label">3. المستوى التعليمي:</label>
+                            <div class="options-stack">
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="education" value="illiterate" required>
+                                    <span class="option-label">أمي</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="education" value="khalwa">
+                                    <span class="option-label">خلاوي وقرآني</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="education" value="primary">
+                                    <span class="option-label">أساس وابتدائي</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="education" value="secondary">
+                                    <span class="option-label">ثانوي</span>
+                                </label>
+                                <label class="option-card" onclick="selectCardOption(this)">
+                                    <input type="radio" name="education" value="university">
+                                    <span class="option-label">جامعي فما فوق</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: AXIS 1 -->
+                <div class="step-content" id="step2">
+                    <h2 class="section-title">
+                        <span class="section-icon">٢</span>
+                        المحور الأول: واقع حوكمة الموارد والمسارات الرعوية (المراحيل)
+                    </h2>
+
+                    <!-- Question 1 -->
+                    <div class="form-group">
+                        <label class="question-label">1. حدود المسارات الرعوية (المراحيل) واضحة ومرسمة ومحددة للجميع.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q1" value="agree_very" required>
+                                <span class="likert-text">موافق جداً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q1" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q1" value="neutral">
+                                <span class="likert-text">محايد</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q1" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="form-group">
+                        <label class="question-label">2. القوانين واللوائح الرسمية للمراعي مطبقة بفعالية وحسم من السلطات.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q2" value="agree_very" required>
+                                <span class="likert-text">موافق جداً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q2" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q2" value="neutral">
+                                <span class="likert-text">محايد</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q2" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="form-group">
+                        <label class="question-label">3. المجتمعات المحلية (رعاة ومزارعون) تشارك في وضع وتعديل قواعد الموارد.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q3" value="agree_very" required>
+                                <span class="likert-text">موافق جداً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q3" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q3" value="neutral">
+                                <span class="likert-text">محايد</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q3" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="form-group">
+                        <label class="question-label">4. هناك رقابة ومتابعة دورية لحماية المراحيل والمسارات من التعدي والزراعة.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q4" value="agree_very" required>
+                                <span class="likert-text">موافق جداً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q4" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q4" value="neutral">
+                                <span class="likert-text">محايد</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis1_q4" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: AXIS 2 -->
+                <div class="step-content" id="step3">
+                    <h2 class="section-title">
+                        <span class="section-icon">٣</span>
+                        المحور الثاني: أسباب ومحفزات وقوع النزاعات القبلية حول الموارد
+                    </h2>
+
+                    <!-- Question 1 -->
+                    <div class="form-group">
+                        <label class="question-label">1. التعدي والتوسع الزراعي على المسارات الرعوية والمراحيل التاريخية.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q1" value="agree_strongly" required>
+                                <span class="likert-text">موافق بشدة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q1" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q1" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="form-group">
+                        <label class="question-label">2. دخول الماشية المبكر للحقول وتلف المحاصيل الزراعية (الطليق المبكر).</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q2" value="agree_strongly" required>
+                                <span class="likert-text">موافق بشدة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q2" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q2" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="form-group">
+                        <label class="question-label">3. التنافس الحاد حول نقاط المياه والأودية خلال الصيف وموسم الجفاف.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q3" value="agree_strongly" required>
+                                <span class="likert-text">موافق بشدة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q3" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q3" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="form-group">
+                        <label class="question-label">4. انتشار السلاح الناري وتسييس الولاء القبلي والعرقي بين المجموعات.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q4" value="agree_strongly" required>
+                                <span class="likert-text">موافق بشدة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q4" value="agree">
+                                <span class="likert-text">موافق</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis2_q4" value="disagree">
+                                <span class="likert-text">غير موافق</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: AXIS 3 -->
+                <div class="step-content" id="step4">
+                    <h2 class="section-title">
+                        <span class="section-icon">٤</span>
+                        المحور الثالث: تقييم كفاءة آليات الإدارة الأهلية التقليدية في فض النزاعات
+                    </h2>
+
+                    <!-- Question 1 -->
+                    <div class="form-group">
+                        <label class="question-label">1. الثقة والقبول الشعبي لقرارات مجالس التحكيم والصلح (الجودية).</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q1" value="high" required>
+                                <span class="likert-text">بدرجة كبيرة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q1" value="medium">
+                                <span class="likert-text">بدرجة متوسطة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q1" value="low">
+                                <span class="likert-text">بدرجة ضعيفة</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="form-group">
+                        <label class="question-label">2. القدرة الميدانية لرجالات الإدارة الأهلية على إلزام المخالفين وقمع التعديات.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q2" value="high" required>
+                                <span class="likert-text">بدرجة كبيرة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q2" value="medium">
+                                <span class="likert-text">بدرجة متوسطة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q2" value="low">
+                                <span class="likert-text">بدرجة ضعيفة</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="form-group">
+                        <label class="question-label">3. سرعة التدخل لفض الاحتكاكات والنزاعات قبل تطورها إلى اصطدام مسلح.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q3" value="high" required>
+                                <span class="likert-text">بدرجة كبيرة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q3" value="medium">
+                                <span class="likert-text">بدرجة متوسطة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q3" value="low">
+                                <span class="likert-text">بدرجة ضعيفة</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="form-group">
+                        <label class="question-label">4. التنسيق والتعاون المشترك بين الإدارة الأهلية والأجهزة الرسمية للدولة.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q4" value="high" required>
+                                <span class="likert-text">بدرجة كبيرة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q4" value="medium">
+                                <span class="likert-text">بدرجة متوسطة</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis3_q4" value="low">
+                                <span class="likert-text">بدرجة ضعيفة</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: AXIS 4 -->
+                <div class="step-content" id="step5">
+                    <h2 class="section-title">
+                        <span class="section-icon">٥</span>
+                        المحور الرابع: تقييم دور المؤسسات الرسمية للدولة والتنسيق الحكومي
+                    </h2>
+
+                    <!-- Question 1 -->
+                    <div class="form-group">
+                        <label class="question-label">1. صيانة وفتح وحفر الآبار والحفائر الحكومية على طول المراحيل والأراضي الرعوية.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q1" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q1" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q1" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="form-group">
+                        <label class="question-label">2. سرعة إنفاذ القوانين ومعاقبة المتعدين على الغابات والمراعي الطبيعية.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q2" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q2" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q2" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="form-group">
+                        <label class="question-label">3. تسيير دوريات الأمن لحماية الموسم الزراعي وتأمين مسارات الرحل.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q3" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q3" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q3" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="form-group">
+                        <label class="question-label">4. دعم لجان التخطيط المشترك لتقليل الفجوة التنسيقية وتعميق الثقة.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q4" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q4" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q4" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="form-group">
+                        <label class="question-label">5. دفع الضرائب والزكاة بالنسبة لسلطات الدولة مقابل الخدمات الزراعية والرعوية.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q5" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q5" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q5" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="form-group">
+                        <label class="question-label">6. تدريبك على نظام زراعي – رعوي يمكن أن يبعدك عن النزاعات القبلية.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q6" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q6" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q6" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="form-group">
+                        <label class="question-label">7. هل تؤمن بأن كل الأراضي تتبع للإدارة الأهلية أو الدولة؟</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q7" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q7" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q7" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="form-group">
+                        <label class="question-label">8. ما مدى قبولك بتوزيع الملح والعطرون في نقاط داخل المرعى بواسطة سلطات الدولة؟</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q8" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q8" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q8" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="form-group">
+                        <label class="question-label">9. هل تعتقد بأن التعليم ومحو الأمية يمكن أن ينهي الصراعات بين القبائل؟</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q9" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q9" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q9" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question 10 -->
+                    <div class="form-group">
+                        <label class="question-label">10. التصاهر والزواج بين المزارعين والرعاة يمكن أن يقلل النزاعات فيما بينهم.</label>
+                        <div class="likert-scale">
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q10" value="satisfied" required>
+                                <span class="likert-text">راضٍ تماماً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q10" value="partially">
+                                <span class="likert-text">راضٍ جزئياً</span>
+                            </label>
+                            <label class="likert-option" onclick="selectLikertOption(this)">
+                                <input type="radio" name="axis4_q10" value="unsatisfied">
+                                <span class="likert-text">غير راضٍ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Optional Suggestions / Comments -->
+                    <div class="form-group" style="margin-top: 30px; border-top: 1.5px dashed rgba(45, 106, 79, 0.15); padding-top: 20px;">
+                        <label class="question-label" for="recommendations">ملاحظات أو مقترحات إضافية (اختياري):</label>
+                        <p class="question-desc">(يمكنك كتابة أي إضافات، حلول مجتمعية، أو توصيات تراها مناسبة لتضمينها في البحث)</p>
+                        <textarea class="textarea-input" id="recommendations" name="recommendations" placeholder="اكتب مقترحاتك هنا..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Step Actions / Buttons -->
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" disabled>
+                        <span>&larr;</span> السابق
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+                        التالي <span>&rarr;</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Success State Screen -->
+            <div class="success-card" id="successState">
+                <div class="success-icon-wrapper">
+                    <span class="success-icon">✓</span>
+                </div>
+                <h3 class="success-title">تم تقديم إجابتك بنجاح!</h3>
+                <p class="success-msg">نشكركم جزيل الشكر على وقتكم ومشاركتكم القيمة التي ستسهم بشكل كبير في إثراء هذا البحث الأكاديمي.</p>
+                <button type="button" class="btn btn-primary btn-reset" onclick="resetSurvey()">تقديم استجابة جديدة</button>
+            </div>
+        </div>
+
+        <footer class="footer-text">
+            جميع الحقوق محفوظة &copy; جامعة زالنجي - كلية الدراسات العليا والبحث العلمي 2026
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
