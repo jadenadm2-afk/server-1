@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors    = require('cors');
+const path    = require('path');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -25,7 +26,6 @@ async function initDB() {
         console.log('✅ Database connected and tables synced!');
     } catch (err) {
         console.error('⚠️  DB connection failed:', err.message);
-        console.error('Server running WITHOUT database. Set DATABASE_URL env variable!');
         dbReady = false;
     }
 }
@@ -34,7 +34,7 @@ function requireDB(req, res, next) {
     if (!dbReady) {
         return res.status(503).json({
             error: 'Database not connected',
-            hint: 'Set DATABASE_URL environment variable in Railway Variables',
+            hint: 'Check DATABASE_URL environment variable',
         });
     }
     next();
@@ -45,8 +45,8 @@ function requireDB(req, res, next) {
 // ═══════════════════════════════════════════════════════
 function extractLikertFields(body) {
     const fields = {};
-    ['gov','conf','ahli','state'].forEach(g => {
-        for (let i = 1; i <= 4; i++) {
+    ['gov','conf','ahli','state','axis1','axis2','axis3','axis4'].forEach(g => {
+        for (let i = 1; i <= 15; i++) {
             const key = `${g}_q${i}`;
             if (body[key] !== undefined) fields[key] = body[key];
         }
@@ -82,35 +82,52 @@ function computeStats(responses) {
     const timeline = Object.entries(daily)
         .sort((a, b) => a[0].localeCompare(b[0])).slice(-30)
         .map(([date, count]) => ({ date, count }));
+
     return {
         total: responses.length,
         demographics: {
-            profession: countField('profession'), age: countField('age'),
-            education: countField('education'),   admin_unit: countField('admin_unit'),
+            profession: countField('profession') || countField('occupation'),
+            age:        countField('age'),
+            education:  countField('education'),
+            admin_unit: countField('admin_unit'),
         },
-        governance:   likertTally('gov',   4),
-        conflict:     likertTally('conf',  4),
-        native_admin: likertTally('ahli',  4),
+        governance:   likertTally('gov', 4),
+        conflict:     likertTally('conf', 4),
+        native_admin: likertTally('ahli', 4),
         state_role:   likertTally('state', 4),
         timeline,
     };
 }
 
 // ═══════════════════════════════════════════════════════
-//  Middleware
+//  Middleware & Static Files
 // ═══════════════════════════════════════════════════════
 app.use(cors({ origin: '*', methods: ['GET','POST','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization','x-admin-key'] }));
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => { console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`); next(); });
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 // ═══════════════════════════════════════════════════════
-//  Routes
+//  UI Routes
 // ═══════════════════════════════════════════════════════
-app.get('/', (req, res) => {
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+app.get('/survey', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// ═══════════════════════════════════════════════════════
+//  API Routes
+// ═══════════════════════════════════════════════════════
+app.get('/api', (req, res) => {
     res.json({
-        status: 'online', service: 'Zalingei Survey API v2', database: dbReady ? 'connected' : 'NOT CONNECTED - set DATABASE_URL',
+        status: 'online', service: 'Zalingei Survey API v2', database: dbReady ? 'connected' : 'connecting...',
         endpoints: {
+            'GET  /dashboard': 'Web Dashboard',
+            'GET  /survey': 'Survey Form',
             'GET  /api/health': 'Health check',
             'GET  /api/responses': 'All responses',
             'POST /api/responses': 'Submit response',
@@ -126,7 +143,6 @@ app.get('/api/health', async (req, res) => {
         return res.status(503).json({
             status: 'unhealthy',
             database: 'not connected',
-            hint: 'Add DATABASE_URL to Railway Variables → server-1 → Variables',
             timestamp: new Date().toISOString(),
         });
     }
@@ -163,15 +179,19 @@ app.post('/api/responses', requireDB, async (req, res) => {
         if (!body || typeof body !== 'object') return res.status(400).json({ error: 'Invalid JSON' });
         const record = await SurveyResponse.create({
             respondent_name: body.respondent_name || null,
-            profession:      body.profession      || null,
+            profession:      body.profession || body.occupation || null,
             age:             body.age             || null,
             education:       body.education       || null,
             admin_unit:      body.admin_unit       || null,
             ...extractLikertFields(body),
             raw_data: body, submitted_at: new Date(),
         });
+        console.log(`✅ Saved new response ID: ${record.id}`);
         res.status(201).json({ success: true, id: record.id, message: 'تم حفظ الاستجابة بنجاح' });
-    } catch (err) { res.status(500).json({ error: err.message }); }
+    } catch (err) { 
+        console.error('Error saving response:', err);
+        res.status(500).json({ error: err.message }); 
+    }
 });
 
 app.delete('/api/responses/all', requireDB, async (req, res) => {
@@ -179,7 +199,7 @@ app.delete('/api/responses/all', requireDB, async (req, res) => {
         const adminKey = process.env.ADMIN_KEY;
         if (adminKey && req.headers['x-admin-key'] !== adminKey) return res.status(403).json({ error: 'Unauthorized' });
         await SurveyResponse.destroy({ where: {} });
-        res.json({ success: true });
+        res.json({ success: true, message: 'All deleted' });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -209,17 +229,18 @@ app.get('/api/export', requireDB, async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.use((req, res) => res.status(404).json({ error: 'Route not found', path: req.path }));
+// Default root: serve index.html if exists, otherwise API info
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // ═══════════════════════════════════════════════════════
-//  Start - Server starts immediately, DB connects async
+//  Start
 // ═══════════════════════════════════════════════════════
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`DATABASE_URL: ${process.env.DATABASE_URL ? '✅ SET' : '❌ NOT SET - add to Railway Variables!'}`);
 });
 
-// Connect to DB after server is up
 initDB();
 
 module.exports = app;
