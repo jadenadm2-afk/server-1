@@ -9,12 +9,11 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ═══════════════════════════════════════════════════════
-//  Helper: extract named Likert fields from raw body
+//  Helper: extract Likert fields from body
 // ═══════════════════════════════════════════════════════
 function extractLikertFields(body) {
     const fields = {};
-    const groups = ['gov', 'conf', 'ahli', 'state'];
-    groups.forEach(g => {
+    ['gov','conf','ahli','state'].forEach(g => {
         for (let i = 1; i <= 4; i++) {
             const key = `${g}_q${i}`;
             if (body[key] !== undefined) fields[key] = body[key];
@@ -24,7 +23,7 @@ function extractLikertFields(body) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  Stats computation (same logic as before)
+//  Stats computation
 // ═══════════════════════════════════════════════════════
 function computeStats(responses) {
     const countField = (field) => {
@@ -46,12 +45,6 @@ function computeStats(responses) {
             });
         }
         return tally;
-    };
-
-    const positiveRate = (tally, positiveKeys) => {
-        const total = Object.values(tally).reduce((a, b) => a + b, 0);
-        const positive = positiveKeys.reduce((sum, k) => sum + (tally[k] || 0), 0);
-        return total ? +(positive / total * 100).toFixed(1) : 0;
     };
 
     const governance   = likertTally('gov',   4);
@@ -104,21 +97,17 @@ app.use((req, res, next) => {
 // ═══════════════════════════════════════════════════════
 //  Routes
 // ═══════════════════════════════════════════════════════
-
-// Health / root
 app.get('/', (req, res) => {
     res.json({
-        status:    'online',
-        service:   'Zalingei Survey API',
-        version:   '2.0.0',
-        database:  'PostgreSQL + Sequelize',
+        status: 'online', service: 'Zalingei Survey API', version: '2.0.0',
+        database: 'PostgreSQL + Sequelize',
         endpoints: {
             'GET  /api/health':          'Health check',
             'GET  /api/responses':       'All survey responses',
             'GET  /api/responses/:id':   'Single response',
             'POST /api/responses':       'Submit new response',
-            'DELETE /api/responses/:id': 'Delete response',
             'DELETE /api/responses/all': 'Clear all (admin)',
+            'DELETE /api/responses/:id': 'Delete response',
             'GET  /api/stats':           'Computed statistics',
             'GET  /api/export':          'Export JSON',
         },
@@ -136,17 +125,14 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
-// GET all responses
 app.get('/api/responses', async (req, res) => {
     try {
         const { profession, age, limit } = req.query;
         const where = {};
         if (profession) where.profession = profession;
         if (age)        where.age        = age;
-
         const rows = await SurveyResponse.findAll({
-            where,
-            order: [['submitted_at', 'DESC']],
+            where, order: [['submitted_at', 'DESC']],
             limit: limit ? parseInt(limit) : undefined,
         });
         res.json(rows);
@@ -155,7 +141,6 @@ app.get('/api/responses', async (req, res) => {
     }
 });
 
-// GET single response
 app.get('/api/responses/:id', async (req, res) => {
     try {
         const row = await SurveyResponse.findByPk(req.params.id);
@@ -166,19 +151,13 @@ app.get('/api/responses/:id', async (req, res) => {
     }
 });
 
-// POST new response
 app.post('/api/responses', async (req, res) => {
     try {
         const body = req.body;
         if (!body || typeof body !== 'object') {
             return res.status(400).json({ error: 'يرجى إرسال JSON صالح' });
         }
-        if (!body.profession && !body.age) {
-            return res.status(400).json({ error: 'البيانات الأساسية مطلوبة' });
-        }
-
         const likertFields = extractLikertFields(body);
-
         const record = await SurveyResponse.create({
             respondent_name: body.respondent_name || null,
             profession:      body.profession      || null,
@@ -186,19 +165,16 @@ app.post('/api/responses', async (req, res) => {
             education:       body.education       || null,
             admin_unit:      body.admin_unit       || null,
             ...likertFields,
-            raw_data:    body,
+            raw_data:     body,
             submitted_at: new Date(),
         });
-
-        console.log(`✅ استجابة جديدة: ${record.id} (${record.profession || '?'} - ${record.admin_unit || '?'})`);
-
+        console.log(`New response: ${record.id}`);
         res.status(201).json({ success: true, id: record.id, message: 'تم حفظ الاستجابة بنجاح' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// DELETE all (admin)
 app.delete('/api/responses/all', async (req, res) => {
     try {
         const adminKey = process.env.ADMIN_KEY;
@@ -212,7 +188,6 @@ app.delete('/api/responses/all', async (req, res) => {
     }
 });
 
-// DELETE single response
 app.delete('/api/responses/:id', async (req, res) => {
     try {
         const row = await SurveyResponse.findByPk(req.params.id);
@@ -224,7 +199,6 @@ app.delete('/api/responses/:id', async (req, res) => {
     }
 });
 
-// GET statistics
 app.get('/api/stats', async (req, res) => {
     try {
         const rows = await SurveyResponse.findAll();
@@ -234,7 +208,6 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// Export JSON
 app.get('/api/export', async (req, res) => {
     try {
         const rows  = await SurveyResponse.findAll({ order: [['submitted_at', 'DESC']] });
@@ -248,35 +221,30 @@ app.get('/api/export', async (req, res) => {
     }
 });
 
-// 404
 app.use((req, res) => {
     res.status(404).json({ error: 'المسار غير موجود', path: req.path });
 });
 
 // ═══════════════════════════════════════════════════════
-//  Start Server
+//  Start Server - Auto-sync tables on startup
 // ═══════════════════════════════════════════════════════
 (async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ تم الاتصال بقاعدة البيانات PostgreSQL');
+        console.log('✅ Connected to PostgreSQL');
 
-        // sync only in dev if needed; prefer migrations in production
-        // await sequelize.sync({ alter: true });
+        // Creates tables automatically if they do not exist
+        await sequelize.sync({ force: false });
+        console.log('✅ Tables synchronized successfully');
 
         app.listen(PORT, '0.0.0.0', () => {
-            console.log('═'.repeat(55));
-            console.log('  🌿  خادم استبيان الحوكمة - زالنجي');
-            console.log('═'.repeat(55));
-            console.log(`  🚀  المنفذ     : ${PORT}`);
-            console.log(`  🗄️   قاعدة البيانات: PostgreSQL (Sequelize)`);
-            console.log(`  ❤️   الحالة : GET /api/health`);
-            console.log(`  📊  الإحصاء : GET /api/stats`);
-            console.log(`  📋  البيانات : GET /api/responses`);
-            console.log('═'.repeat(55));
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`🗄️  Database: PostgreSQL`);
+            console.log(`❤️  Health: GET /api/health`);
         });
     } catch (err) {
-        console.error('❌ فشل الاتصال بقاعدة البيانات:', err.message);
+        console.error('❌ Database connection failed:', err.message);
+        console.error(err);
         process.exit(1);
     }
 })();
