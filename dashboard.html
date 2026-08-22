@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة تحكم | استبيان حوكمة الموارد الرعوية - زالنجي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d1117; --surface:#161b22; --surface2:#1c2230;
+      --border:rgba(255,255,255,.08); --primary:#3b82f6; --primary2:#6366f1;
+      --green:#22c55e; --orange:#f97316; --red:#ef4444; --amber:#f59e0b;
+      --text:#e6edf3; --muted:#8b949e; --radius:14px; --shadow:0 8px 32px rgba(0,0,0,.45);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+    .blob { position:fixed; border-radius:50%; filter:blur(110px); pointer-events:none; z-index:0; opacity:.15; }
+    .blob-1 { width:600px; height:600px; background:var(--primary); top:-200px; right:-200px; }
+    .blob-2 { width:500px; height:500px; background:var(--primary2); bottom:-150px; left:-150px; }
+
+    /* Sidebar */
+    .sidebar {
+      position:fixed; top:0; right:0; height:100vh; width:240px;
+      background:var(--surface); border-left:1px solid var(--border);
+      display:flex; flex-direction:column; z-index:100; padding:28px 0;
+    }
+    .sidebar-logo { padding:0 24px 28px; border-bottom:1px solid var(--border); }
+    .sidebar-logo h2 { font-size:1rem; font-weight:700; color:var(--primary); line-height:1.4; }
+    .sidebar-logo p { font-size:.72rem; color:var(--muted); margin-top:3px; }
+    .nav-group { padding:20px 0 0; flex:1; }
+    .nav-label { font-size:.65rem; font-weight:700; color:var(--muted); letter-spacing:.1em; padding:0 24px 8px; text-transform:uppercase; }
+    .nav-item {
+      display:flex; align-items:center; gap:10px; padding:10px 24px;
+      cursor:pointer; font-size:.85rem; color:var(--muted);
+      border:none; background:transparent; width:100%; text-align:right;
+      transition:background .2s, color .2s;
+    }
+    .nav-item:hover { background:rgba(255,255,255,.05); color:var(--text); }
+    .nav-item.active { color:var(--primary); background:rgba(59,130,246,.12); border-right:3px solid var(--primary); }
+    .sidebar-footer { padding:20px 24px 0; border-top:1px solid var(--border); }
+    #statusDot { display:flex; align-items:center; gap:8px; font-size:.75rem; color:var(--muted); }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); flex-shrink:0; }
+    .dot.online { background:var(--green); box-shadow:0 0 6px var(--green); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* Main */
+    .main { margin-right:240px; min-height:100vh; padding:0 32px 60px; position:relative; z-index:1; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:24px 0 20px; border-bottom:1px solid var(--border); margin-bottom:32px;
+    }
+    .topbar h1 { font-size:1.35rem; font-weight:700; }
+    .topbar h1 span { color:var(--primary); }
+    .topbar-actions { display:flex; gap:10px; align-items:center; }
+    .btn {
+      display:inline-flex; align-items:center; gap:6px; padding:8px 16px;
+      border-radius:8px; font-size:.82rem; font-family:inherit; cursor:pointer;
+      border:none; font-weight:600; transition:all .2s;
+    }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-primary:hover { background:#2563eb; transform:translateY(-1px); }
+    .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .btn-ghost:hover { background:var(--surface2); color:var(--text); }
+    .btn-danger { background:var(--red); color:#fff; }
+    .btn-danger:hover { background:#dc2626; }
+    #lastUpdated { font-size:.75rem; color:var(--muted); }
+
+    /* KPI */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px; }
+    .kpi {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:22px; position:relative;
+      overflow:hidden; transition:transform .2s, box-shadow .2s;
+    }
+    .kpi:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+    .kpi.blue::before  { background:linear-gradient(90deg,var(--primary),var(--primary2)); }
+    .kpi.green::before { background:linear-gradient(90deg,var(--green),#16a34a); }
+    .kpi.orange::before{ background:linear-gradient(90deg,var(--orange),#ea580c); }
+    .kpi.amber::before { background:linear-gradient(90deg,var(--amber),#d97706); }
+    .kpi-label { font-size:.75rem; color:var(--muted); font-weight:600; }
+    .kpi-value { font-size:2.2rem; font-weight:900; margin:8px 0 4px; line-height:1; }
+    .kpi-sub   { font-size:.72rem; color:var(--muted); }
+    .kpi-icon  { position:absolute; top:18px; left:20px; font-size:1.6rem; opacity:.22; }
+
+    .section-title {
+      font-size:.95rem; font-weight:700; margin-bottom:16px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* Axis */
+    .axis-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+    .axis-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; text-align:center; }
+    .axis-card .rate { font-size:2rem; font-weight:900; margin-bottom:6px; }
+    .axis-card .axis-label { font-size:.75rem; color:var(--muted); }
+    .rate-bar { height:4px; border-radius:4px; background:var(--surface2); margin:10px 0 0; overflow:hidden; }
+    .rate-bar-fill { height:100%; border-radius:4px; transition:width 1.2s ease; }
+
+    /* Charts */
+    .charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:28px; }
+    .charts-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:28px; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; }
+    .card-title { font-size:.82rem; font-weight:700; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em; }
+
+    /* Table */
+    .table-wrap { overflow-x:auto; border-radius:var(--radius); background:var(--surface); border:1px solid var(--border); margin-bottom:28px; }
+    table { width:100%; border-collapse:collapse; font-size:.8rem; }
+    thead th { background:var(--surface2); padding:12px 16px; text-align:right; font-weight:700; color:var(--muted); font-size:.72rem; text-transform:uppercase; border-bottom:1px solid var(--border); }
+    tbody tr { border-bottom:1px solid var(--border); transition:background .15s; }
+    tbody tr:hover { background:rgba(255,255,255,.03); }
+    tbody tr:last-child { border-bottom:none; }
+    tbody td { padding:11px 16px; }
+    .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.7rem; font-weight:700; }
+    .badge-blue   { background:rgba(59,130,246,.15); color:#60a5fa; }
+    .badge-green  { background:rgba(34,197,94,.15);  color:#4ade80; }
+
+    /* API row */
+    .api-row {
+      display:flex; gap:10px; align-items:center; margin-bottom:24px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:14px 18px;
+    }
+    .api-row label { font-size:.8rem; color:var(--muted); white-space:nowrap; }
+    .api-row input {
+      flex:1; background:var(--surface2); border:1px solid var(--border);
+      border-radius:8px; padding:8px 14px; color:var(--text);
+      font-family:'Cairo',sans-serif; font-size:.82rem; outline:none;
+    }
+    .api-row input:focus { border-color:var(--primary); }
+
+    .loading { display:flex; align-items:center; justify-content:center; gap:12px; padding:40px; color:var(--muted); font-size:.85rem; }
+    .spinner { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); border-top-color:var(--primary); animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .empty { text-align:center; padding:50px 20px; color:var(--muted); font-size:.85rem; }
+    .empty .icon { font-size:3rem; margin-bottom:12px; }
+
+    #toast {
+      position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:10px; padding:12px 24px; font-size:.82rem;
+      z-index:9999; opacity:0; transition:opacity .3s; pointer-events:none;
+    }
+    #toast.show { opacity:1; }
+
+    .fade-in { animation:fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+    @media(max-width:1024px) {
+      .kpi-grid{grid-template-columns:repeat(2,1fr)}
+      .charts-grid{grid-template-columns:1fr}
+      .charts-grid-3{grid-template-columns:1fr}
+      .axis-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:768px) {
+      .sidebar{display:none}
+      .main{margin-right:0;padding:0 16px 40px}
+    }
+  </style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🌿 لوحة التحكم</h2>
+    <p>استبيان حوكمة زالنجي</p>
+  </div>
+  <div class="nav-group">
+    <p class="nav-label">القائمة</p>
+    <button class="nav-item active" onclick="showSection('overview')" id="nav-overview"><span>📊</span> نظرة عامة</button>
+    <button class="nav-item" onclick="showSection('charts')" id="nav-charts"><span>📈</span> الرسوم البيانية</button>
+    <button class="nav-item" onclick="showSection('responses')" id="nav-responses"><span>📋</span> الاستجابات</button>
+    <button class="nav-item" onclick="showSection('settings')" id="nav-settings"><span>⚙️</span> الإعدادات</button>
+  </div>
+  <div class="sidebar-footer">
+    <div id="statusDot">
+      <div class="dot" id="dot"></div>
+      <span id="statusText">يتصل...</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <h1>لوحة تحكم <span>استبيان زالنجي</span></h1>
+    <div class="topbar-actions">
+      <span id="lastUpdated"></span>
+      <button class="btn btn-ghost" onclick="loadAll()">🔄 تحديث</button>
+      <button class="btn btn-primary" onclick="exportData()">⬇️ تصدير</button>
+    </div>
+  </div>
+
+  <div class="api-row">
+    <label>🔗 رابط API:</label>
+    <input type="text" id="apiUrl" value="http://localhost:3000" placeholder="https://your-app.railway.app" />
+    <button class="btn btn-primary" onclick="loadAll()">اتصال</button>
+  </div>
+
+  <!-- Overview -->
+  <div id="section-overview">
+    <div class="kpi-grid">
+      <div class="kpi blue fade-in">
+        <div class="kpi-icon">📝</div>
+        <div class="kpi-label">إجمالي الاستجابات</div>
+        <div class="kpi-value" id="kpiTotal">—</div>
+        <div class="kpi-sub">منذ بداية الدراسة</div>
+      </div>
+      <div class="kpi green fade-in" style="animation-delay:.07s">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-label">الحوكمة - نسبة القبول</div>
+        <div class="kpi-value" id="kpiGov">—</div>
+        <div class="kpi-sub">محور الحوكمة والإدارة</div>
+      </div>
+      <div class="kpi orange fade-in" style="animation-delay:.14s">
+        <div class="kpi-icon">🤝</div>
+        <div class="kpi-label">الإدارة الأهلية</div>
+        <div class="kpi-value" id="kpiAhli">—</div>
+        <div class="kpi-sub">محور الإدارة الأهلية</div>
+      </div>
+      <div class="kpi amber fade-in" style="animation-delay:.21s">
+        <div class="kpi-icon">🏛️</div>
+        <div class="kpi-label">رضا دور الدولة</div>
+        <div class="kpi-value" id="kpiState">—</div>
+        <div class="kpi-sub">محور دور الدولة</div>
+      </div>
+    </div>
+
+    <p class="section-title">📌 معدلات المحاور الرئيسية</p>
+    <div class="axis-grid">
+      <div class="axis-card fade-in">
+        <div class="rate" id="axisGovRate" style="color:var(--primary)">—</div>
+        <div class="axis-label">الحوكمة</div>
+        <div class="rate-bar"><div class="rate-bar-fill" id="barGov" style="background:var(--primary);width:0%"></div></div>
+      </div>
+      <div class="axis-card fade-in" style="animation-delay:.07s">
+        <div class="rate" id="axisConfRate" style="color:var(--red)">—</div>
+        <div class="axis-label">النزاع</div>
+        <div class="rate-bar"><div class="rate-bar-fill" id="barConf" style="background:var(--red);width:0%"></div></div>
+      </div>
+      <div class="axis-card fade-in" style="animation-delay:.14s">
+        <div class="rate" id="axisAhliRate" style="color:var(--orange)">—</div>
+        <div class="axis-label">الإدارة الأهلية</div>
+        <div class="rate-bar"><div class="rate-bar-fill" id="barAhli" style="background:var(--orange);width:0%"></div></div>
+      </div>
+      <div class="axis-card fade-in" style="animation-delay:.21s">
+        <div class="rate" id="axisStateRate" style="color:var(--amber)">—</div>
+        <div class="axis-label">دور الدولة</div>
+        <div class="rate-bar"><div class="rate-bar-fill" id="barState" style="background:var(--amber);width:0%"></div></div>
+      </div>
+    </div>
+
+    <p class="section-title">📅 الاستجابات اليومية (آخر 30 يوم)</p>
+    <div class="card fade-in" style="margin-bottom:28px">
+      <div style="position:relative;height:220px"><canvas id="timelineChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div id="section-charts" style="display:none">
+    <p class="section-title">👥 التوزيع الديموغرافي</p>
+    <div class="charts-grid" style="margin-bottom:28px">
+      <div class="card fade-in"><div class="card-title">المهنة</div><div style="position:relative;height:260px"><canvas id="profChart"></canvas></div></div>
+      <div class="card fade-in"><div class="card-title">الفئة العمرية</div><div style="position:relative;height:260px"><canvas id="ageChart"></canvas></div></div>
+      <div class="card fade-in"><div class="card-title">المستوى التعليمي</div><div style="position:relative;height:260px"><canvas id="eduChart"></canvas></div></div>
+      <div class="card fade-in"><div class="card-title">الوحدة الإدارية</div><div style="position:relative;height:260px"><canvas id="unitChart"></canvas></div></div>
+    </div>
+    <p class="section-title">📊 محاور الاستبيان</p>
+    <div class="charts-grid-3">
+      <div class="card fade-in"><div class="card-title">محور الحوكمة</div><div style="position:relative;height:240px"><canvas id="govChart"></canvas></div></div>
+      <div class="card fade-in"><div class="card-title">محور النزاع</div><div style="position:relative;height:240px"><canvas id="confChart"></canvas></div></div>
+      <div class="card fade-in"><div class="card-title">الإدارة الأهلية</div><div style="position:relative;height:240px"><canvas id="ahliChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- Responses -->
+  <div id="section-responses" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <p class="section-title" style="margin:0;flex:1">📋 جميع الاستجابات</p>
+      <div style="display:flex;gap:8px;margin-right:16px">
+        <input type="text" id="searchInput" placeholder="🔍 بحث..." oninput="filterTable()"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.82rem;outline:none;width:200px" />
+        <button class="btn btn-danger" onclick="confirmDeleteAll()">🗑️ حذف الكل</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div id="tableLoading" class="loading"><div class="spinner"></div> جاري التحميل...</div>
+      <table id="responsesTable" style="display:none">
+        <thead><tr><th>#</th><th>الاسم</th><th>المهنة</th><th>الفئة العمرية</th><th>التعليم</th><th>الوحدة الإدارية</th><th>تاريخ التقديم</th><th>إجراءات</th></tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="tableEmpty" class="empty" style="display:none"><div class="icon">📭</div><p>لا توجد استجابات حتى الآن</p></div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="section-settings" style="display:none">
+    <div class="card fade-in" style="max-width:520px">
+      <div class="card-title">⚙️ إعدادات الاتصال</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:18px">أدخل رابط API الخاص بسيرفر Railway.app</p>
+      <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px">رابط API</label>
+      <input type="text" id="settingsApiUrl" placeholder="https://your-app.railway.app"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;outline:none;margin-bottom:14px" />
+      <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:6px">مفتاح Admin (اختياري)</label>
+      <input type="password" id="adminKeyInput" placeholder="ADMIN_KEY"
+        style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Cairo',sans-serif;font-size:.85rem;outline:none;margin-bottom:20px" />
+      <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ وتحديث</button>
+    </div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+let API = localStorage.getItem('dashApiUrl') || 'http://localhost:3000';
+let ADMIN_KEY = localStorage.getItem('dashAdminKey') || '';
+let allResponses = [];
+let charts = {};
+
+document.getElementById('apiUrl').value = API;
+document.getElementById('settingsApiUrl').value = API;
+document.getElementById('adminKeyInput').value = ADMIN_KEY;
+
+function showSection(name) {
+  ['overview','charts','responses','settings'].forEach(s => {
+    document.getElementById('section-' + s).style.display = s === name ? '' : 'none';
+    document.getElementById('nav-' + s).classList.toggle('active', s === name);
+  });
+  if (name === 'responses') renderTable(allResponses);
+}
+
+async function apiFetch(path, opts = {}) {
+  const base = (document.getElementById('apiUrl').value.trim() || API).replace(/\/$/, '');
+  const headers = { 'Content-Type': 'application/json' };
+  if (ADMIN_KEY) headers['x-admin-key'] = ADMIN_KEY;
+  const res = await fetch(base + path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function loadAll() {
+  setStatus('connecting');
+  try {
+    const [stats, responses] = await Promise.all([apiFetch('/api/stats'), apiFetch('/api/responses')]);
+    allResponses = responses;
+    setStatus('online');
+    renderKPIs(stats);
+    renderAxisRates(stats);
+    renderTimeline(stats.timeline || []);
+    renderDemoCharts(stats.demographics);
+    renderLikertCharts(stats);
+    updateTimestamp();
+    toast('تم تحديث البيانات');
+  } catch (e) {
+    setStatus('offline');
+    toast('فشل الاتصال: ' + e.message, true);
+  }
+}
+
+function renderKPIs(s) {
+  animNum('kpiTotal', s.total);
+  const ar = s.axis_rates || {};
+  set('kpiGov',   ar.governance_approval !== undefined ? ar.governance_approval + '%' : '—');
+  set('kpiAhli',  ar.native_admin_high   !== undefined ? ar.native_admin_high   + '%' : '—');
+  set('kpiState', ar.state_satisfaction  !== undefined ? ar.state_satisfaction  + '%' : '—');
+}
+
+function animNum(id, end) {
+  const el = document.getElementById(id); let s = 0, step = Math.ceil(end / 30);
+  const t = setInterval(() => { s = Math.min(s + step, end); el.textContent = s.toLocaleString('ar-EG'); if (s >= end) clearInterval(t); }, 30);
+}
+function set(id, v) { const el = document.getElementById(id); if(el) el.textContent = v; }
+
+function calcRate(obj) {
+  if (!obj) return 0;
+  const vals = Object.values(obj); const total = vals.reduce((a, b) => a + b, 0);
+  if (!total) return 0;
+  const sorted = [...vals].sort((a, b) => b - a);
+  return +((( (sorted[0]||0) + (sorted[1]||0) ) / total * 100).toFixed(1));
+}
+
+function renderAxisRates(s) {
+  const items = [
+    ['axisGovRate','barGov',calcRate(s.governance)],
+    ['axisConfRate','barConf',calcRate(s.conflict)],
+    ['axisAhliRate','barAhli',calcRate(s.native_admin)],
+    ['axisStateRate','barState',calcRate(s.state_role)],
+  ];
+  items.forEach(([rid, bid, val]) => {
+    set(rid, val + '%');
+    setTimeout(() => { const b = document.getElementById(bid); if(b) b.style.width = val + '%'; }, 400);
+  });
+}
+
+const PAL = ['#3b82f6','#6366f1','#22c55e','#f59e0b','#ef4444','#ec4899','#14b8a6','#8b5cf6','#f97316','#06b6d4'];
+
+function mkChart(id, type, labels, data) {
+  if (charts[id]) charts[id].destroy();
+  const el = document.getElementById(id); if(!el) return;
+  charts[id] = new Chart(el.getContext('2d'), {
+    type, data: {
+      labels, datasets: [{
+        data,
+        backgroundColor: type==='line' ? 'rgba(59,130,246,.15)' : PAL.slice(0,data.length),
+        borderColor: type==='line' ? '#3b82f6' : PAL.slice(0,data.length),
+        borderWidth: type==='line' ? 2 : 1.5, fill: type==='line', tension:.4,
+        pointBackgroundColor:'#3b82f6', pointRadius:4, borderRadius: type==='bar'?6:0,
+      }],
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend: { display: type!=='line'&&type!=='bar', labels:{color:'#8b949e',font:{family:'Cairo',size:11},boxWidth:12,padding:10} },
+        tooltip: { bodyFont:{family:'Cairo'}, titleFont:{family:'Cairo'} },
+      },
+      scales: (type==='line'||type==='bar') ? {
+        x:{ticks:{color:'#8b949e',font:{family:'Cairo',size:10}},grid:{color:'rgba(255,255,255,.05)'}},
+        y:{ticks:{color:'#8b949e',font:{family:'Cairo',size:10}},grid:{color:'rgba(255,255,255,.05)'},beginAtZero:true},
+      } : {},
+    },
+  });
+}
+
+function renderTimeline(tl) { mkChart('timelineChart','line', tl.map(t=>t.date), tl.map(t=>t.count)); }
+
+function renderDemoCharts(demo) {
+  if (!demo) return;
+  objChart('profChart', demo.profession, 'doughnut');
+  objChart('ageChart',  demo.age,        'doughnut');
+  objChart('eduChart',  demo.education,  'bar');
+  objChart('unitChart', demo.admin_unit, 'bar');
+}
+function objChart(id, obj, type) { if(!obj) return; mkChart(id, type, Object.keys(obj), Object.values(obj)); }
+
+function renderLikertCharts(s) {
+  objChart('govChart',  s.governance,   'doughnut');
+  objChart('confChart', s.conflict,     'doughnut');
+  objChart('ahliChart', s.native_admin, 'doughnut');
+}
+
+function renderTable(rows) {
+  set_display('tableLoading','none');
+  if (!rows || !rows.length) {
+    set_display('responsesTable','none'); set_display('tableEmpty','');
+    return;
+  }
+  set_display('tableEmpty','none'); set_display('responsesTable','');
+  document.getElementById('tableBody').innerHTML = rows.map((r,i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.respondent_name||'<span style="color:var(--muted)">—</span>'}</td>
+      <td><span class="badge badge-blue">${r.profession||'—'}</span></td>
+      <td>${r.age||'—'}</td>
+      <td>${r.education||'—'}</td>
+      <td><span class="badge badge-green">${r.admin_unit||'—'}</span></td>
+      <td style="color:var(--muted);font-size:.75rem">${fmtDate(r.submitted_at||r.createdAt)}</td>
+      <td><button class="btn btn-danger" style="padding:5px 10px;font-size:.72rem" onclick="delRow('${r.id}')">🗑️</button></td>
+    </tr>`).join('');
+}
+function set_display(id, v) { const el = document.getElementById(id); if(el) el.style.display = v; }
+function filterTable() { const q = document.getElementById('searchInput').value.toLowerCase(); renderTable(allResponses.filter(r => JSON.stringify(r).toLowerCase().includes(q))); }
+
+async function delRow(id) {
+  if (!confirm('هل تريد حذف هذه الاستجابة؟')) return;
+  try { await apiFetch('/api/responses/'+id,{method:'DELETE'}); allResponses=allResponses.filter(r=>r.id!==id); renderTable(allResponses); toast('تم الحذف'); }
+  catch(e) { toast('فشل الحذف: '+e.message, true); }
+}
+async function confirmDeleteAll() {
+  if (!confirm('تحذير! سيتم حذف جميع الاستجابات. متأكد؟')) return;
+  try { await apiFetch('/api/responses/all',{method:'DELETE'}); allResponses=[]; renderTable([]); toast('تم حذف جميع الاستجابات'); }
+  catch(e) { toast('فشل: '+e.message, true); }
+}
+function exportData() {
+  window.open((document.getElementById('apiUrl').value.trim()||API).replace(/\/$/,'')+'/api/export','_blank');
+}
+function saveSettings() {
+  const url = document.getElementById('settingsApiUrl').value.trim();
+  const key = document.getElementById('adminKeyInput').value.trim();
+  if (url) { API=url; ADMIN_KEY=key; localStorage.setItem('dashApiUrl',url); localStorage.setItem('dashAdminKey',key); document.getElementById('apiUrl').value=url; loadAll(); toast('تم الحفظ'); }
+}
+
+function setStatus(state) {
+  const dot=document.getElementById('dot'), txt=document.getElementById('statusText');
+  if(state==='online') {dot.className='dot online'; txt.textContent='متصل';}
+  else if(state==='offline') {dot.className='dot'; dot.style.background='var(--red)'; txt.textContent='غير متصل';}
+  else {dot.className='dot'; dot.style.background='var(--amber)'; txt.textContent='يتصل...';}
+}
+function updateTimestamp() { set('lastUpdated','آخر تحديث: '+new Date().toLocaleTimeString('ar-EG')); }
+function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'}); }
+
+let toastT;
+function toast(msg, err=false) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.borderColor=err?'var(--red)':'var(--green)';
+  el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+loadAll();
+setInterval(loadAll, 60000);
+</script>
+</body>
+</html>
