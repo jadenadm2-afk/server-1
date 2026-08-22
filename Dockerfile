@@ -1,17 +1,11 @@
-FROM node:20-alpine
+﻿FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm install --production
 
-# Copy all server files
-COPY server.js .
-COPY .sequelizerc .
-COPY config/ ./config/
-COPY models/ ./models/
-COPY migrations/ ./migrations/
+COPY . .
 
 EXPOSE 3000
 
