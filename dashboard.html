@@ -364,37 +364,46 @@ async function loadAll() {
 }
 
 function renderKPIs(s) {
-  animNum('kpiTotal', s.total);
+  animNum('kpiTotal', s.total || 0);
   const ar = s.axis_rates || {};
-  set('kpiGov',   ar.governance_approval !== undefined ? ar.governance_approval + '%' : '—');
-  set('kpiAhli',  ar.native_admin_high   !== undefined ? ar.native_admin_high   + '%' : '—');
-  set('kpiState', ar.state_satisfaction  !== undefined ? ar.state_satisfaction  + '%' : '—');
+  set('kpiGov',   (ar.governance_approval !== undefined && !isNaN(ar.governance_approval)) ? ar.governance_approval + '%' : '—');
+  set('kpiAhli',  (ar.native_admin_high   !== undefined && !isNaN(ar.native_admin_high))   ? ar.native_admin_high   + '%' : '—');
+  set('kpiState', (ar.state_satisfaction  !== undefined && !isNaN(ar.state_satisfaction))  ? ar.state_satisfaction  + '%' : '—');
 }
 
 function animNum(id, end) {
-  const el = document.getElementById(id); let s = 0, step = Math.ceil(end / 30);
-  const t = setInterval(() => { s = Math.min(s + step, end); el.textContent = s.toLocaleString('ar-EG'); if (s >= end) clearInterval(t); }, 30);
+  const el = document.getElementById(id); if (!el) return;
+  let s = 0, target = end || 0;
+  if (target === 0) { el.textContent = '0'; return; }
+  let step = Math.max(1, Math.ceil(target / 30));
+  const t = setInterval(() => { s = Math.min(s + step, target); el.textContent = s.toLocaleString('ar-EG'); if (s >= target) clearInterval(t); }, 30);
 }
 function set(id, v) { const el = document.getElementById(id); if(el) el.textContent = v; }
 
 function calcRate(obj) {
-  if (!obj) return 0;
-  const vals = Object.values(obj); const total = vals.reduce((a, b) => a + b, 0);
+  if (!obj || typeof obj !== 'object') return 0;
+  const vals = Object.values(obj).filter(v => typeof v === 'number' && !isNaN(v));
+  const total = vals.reduce((a, b) => a + b, 0);
   if (!total) return 0;
+  const pos = (obj['أوافق'] || 0) + (obj['أوافق بشدة'] || 0) + (obj['agree'] || 0) + (obj['راضٍ تماماً'] || 0) + (obj['راضٍ جزئياً'] || 0) + (obj['satisfied'] || 0) + (obj['partially'] || 0);
+  if (pos > 0) return Math.round((pos / total) * 100);
   const sorted = [...vals].sort((a, b) => b - a);
-  return +((( (sorted[0]||0) + (sorted[1]||0) ) / total * 100).toFixed(1));
+  const rate = (((sorted[0] || 0) + (sorted[1] || 0)) / total) * 100;
+  return isNaN(rate) ? 0 : Math.round(rate);
 }
 
 function renderAxisRates(s) {
+  const ar = s.axis_rates || {};
   const items = [
-    ['axisGovRate','barGov',calcRate(s.governance)],
-    ['axisConfRate','barConf',calcRate(s.conflict)],
-    ['axisAhliRate','barAhli',calcRate(s.native_admin)],
-    ['axisStateRate','barState',calcRate(s.state_role)],
+    ['axisGovRate','barGov', ar.governance_approval !== undefined ? ar.governance_approval : calcRate(s.governance)],
+    ['axisConfRate','barConf', ar.conflict_impact !== undefined ? ar.conflict_impact : calcRate(s.conflict)],
+    ['axisAhliRate','barAhli', ar.native_admin_high !== undefined ? ar.native_admin_high : calcRate(s.native_admin)],
+    ['axisStateRate','barState', ar.state_satisfaction !== undefined ? ar.state_satisfaction : calcRate(s.state_role)],
   ];
   items.forEach(([rid, bid, val]) => {
-    set(rid, val + '%');
-    setTimeout(() => { const b = document.getElementById(bid); if(b) b.style.width = val + '%'; }, 400);
+    const num = (val === null || val === undefined || isNaN(val)) ? 0 : val;
+    set(rid, num + '%');
+    setTimeout(() => { const b = document.getElementById(bid); if(b) b.style.width = Math.min(Math.max(num, 0), 100) + '%'; }, 300);
   });
 }
 
