@@ -199,7 +199,7 @@
 
   <div class="api-row">
     <label>🔗 رابط API:</label>
-    <input type="text" id="apiUrl" value="http://localhost:3000" placeholder="https://your-app.railway.app" />
+    <input type="text" id="apiUrl" value="https://servery.up.railway.app" placeholder="https://your-app.railway.app" />
     <button class="btn btn-primary" onclick="loadAll()">اتصال</button>
   </div>
 
@@ -318,7 +318,7 @@
 <div id="toast"></div>
 
 <script>
-let API = localStorage.getItem('dashApiUrl') || 'http://localhost:3000';
+let API = localStorage.getItem('dashApiUrl') || 'https://servery.up.railway.app';
 let ADMIN_KEY = localStorage.getItem('dashAdminKey') || '';
 let allResponses = [];
 let charts = {};
