@@ -1,0 +1,31 @@
+﻿{
+  "name": "zalingei-survey-api",
+  "version": "2.0.0",
+  "description": "REST API for Academic Survey - Pastoral Resource Governance, Zalingei Locality",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "db:seed": "npx sequelize-cli db:seed:all",
+    "db:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sequelize": "^6.37.3",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
+  },
+  "keywords": ["survey","api","zalingei","pastoral","academic"],
+  "author": "jadenadm2-afk",
+  "license": "MIT"
+}
