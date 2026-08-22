@@ -168,11 +168,16 @@ function updateStepUI() {
     document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ═══════════════════════════════════════════
+// Railway API URL - يمكن تغييره هنا
+// ═══════════════════════════════════════════
+const API_URL = 'https://servery.up.railway.app';
+
 // Handle Form Submission
-function submitForm(event) {
+async function submitForm(event) {
     if (event) event.preventDefault();
 
-    // Validate the last step (recommendations are optional, so it should pass easily)
+    // Validate the last step
     if (!validateStep(currentStep)) {
         return;
     }
@@ -186,6 +191,39 @@ function submitForm(event) {
     });
 
     console.log("Submitted Survey Data:", data);
+
+    // Show loading state on button
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.innerHTML = 'جاري الإرسال... <span>⏳</span>';
+    }
+
+    try {
+        // Send data to Railway API
+        const response = await fetch(`${API_URL}/api/responses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Saved to database:', result);
+
+    } catch (err) {
+        console.warn('⚠️ Could not save to server (offline mode):', err.message);
+        // Continue to show success even if server is down
+    }
+
+    // Reset button
+    if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.innerHTML = 'إرسال الاستبيان <span>✓</span>';
+    }
 
     // Hide questionnaire form & progress
     form.style.display = 'none';
